@@ -1,0 +1,201 @@
+172.16.5.155
+
+user:  blocking
+pass:  12345
+ 
+
+-- employee performance in a given month
+
+select  assigned_person, count(assigned_to) as count1
+,avg(resolved_date_time - Create_Date)/60/60 as resolved_time
+from arsystem..sprt_issue 
+where 
+	primary_company in ('Idex Corporation','First Group America','Universal Compression',
+		'LumiLeds Lighting','Eka Chemicals','SATCOM Technologies, Inc.',
+		'Esterline Technologies, Corp','MD Helicopters','ACS-HCS','Omnisource Corporation',
+		'ZALES')
+	--and assigned_to in ('ckwong','tyen','lwai','mhall','bstevenson','ajagtap','fdavis','reder','jchutz','ddearmore','jdavis','dhutton','rgerard','jwylie','bvaldez','pshearer')
+	and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '10'
+	and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+group by assigned_person
+order by count1 desc
+
+
+
+-- which servers are making the most noise?
+
+select   substring(issue_summary,7,10) as servername
+		,count(issue_id) as count1
+from arsystem..sprt_issue
+where 
+primary_company = 'Idex Corporation'
+and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '08'
+and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+and (issue_summary like '%EROC:%')
+group by substring(issue_summary,7,10)
+order by count1 desc
+
+
+-- drill down
+
+select issue_id, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970')) as create_date1,
+ issue_summary 
+from arsystem..sprt_issue
+ where 
+primary_company = 'Idex Corporation'
+and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '08'
+and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+and (issue_summary like '%freespace%')
+and (issue_summary like '%DWS01%')
+
+
+
+--find SEV1s for the current month
+
+select  issue_id, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970')) as create_date1,
+	internal_priority, type, customer_impact, SID_1_PRD, assigned_to, issue_status, Issue_type,
+	issue_summary, issue_details, SEV_1_Report_audit, sev_1_report_1, primary_contact, primary_contacts_email_addr,
+	primary_company, created_by, initial_customer_impact ,
+	DATEADD(hh, - 5, DATEADD(s, Date_time_occurred, '01/01/1970')) as occured1,
+	DATEADD(hh, - 5, DATEADD(s, date_time_resolved, '01/01/1970')) as resolved1
+from arsystem..sprt_issue
+where 
+	primary_company = 'Idex Corporation'
+	and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '07'
+	and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+	--and (initial_customer_impact = 'Severity 1' or 
+	and internal_category = 'Unscheduled Outage'
+
+-- find servers causes the most troube over the past month
+
+select count(issue_summary) as count1, substring(issue_summary,7,10) as servername
+from arsystem..sprt_issue
+where 
+	datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '06'
+	and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+	and issue_summary like '%60007%'
+group by substring(issue_summary,7,10) 
+order by count1 desc
+
+
+-- ticket per client in a given month
+
+select  count(primary_company) as count1,primary_company
+from arsystem..sprt_issue
+where 
+	primary_company in ('Idex Corporation','First Group America','Universal Compression',
+		'LumiLeds Lighting','Eka Chemicals','SATCOM Technologies, Inc.',
+		'Esterline Technologies, Corp','MD Helicopters','ACS-HCS','Omnisource Corporation',
+		'ZALES')
+	and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '04'
+	and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+group by primary_company
+order by count1 desc
+
+-- average time for ticket closure
+
+select  assigned_person
+	,avg(resolved_date_time - Create_Date)/60/60 as resolved_time
+	--,datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) as month
+	--,datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) as year
+from arsystem..sprt_issue
+--where primary_company = 'Universal Compression'
+WHERE ASSIGNED_person <> 'Paul Shearer' and
+primary_company in ('Idex Corporation','First Group America','Universal Compression',
+		'LumiLeds Lighting','Eka Chemicals','SATCOM Technologies, Inc.',
+		'Esterline Technologies, Corp','MD Helicopters','ACS-HCS','Omnisource Corporation',
+		'ZALES','Accellent')
+and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+group by assigned_person
+	--,datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970')))
+	--,datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970')))
+order by resolved_time desc
+
+
+-- tickets worked by each support person
+
+select  assigned_to, count(assigned_to) as count1
+from arsystem..sprt_issue
+where 
+	primary_company in ('Idex Corporation','First Group America','Universal Compression',
+		'LumiLeds Lighting','Eka Chemicals','SATCOM Technologies, Inc.',
+		'Esterline Technologies, Corp','MD Helicopters','ACS-HCS','Omnisource Corporation',
+		'ZALES')
+	and assigned_to in ('ckwong','tyen','lwai','mhall','bstevenson','ajagtap','fdavis','reder','jchutz','ddearmore','jdavis','dhutton','rgerard','jwylie','bvaldez')
+	and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '06'
+	and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+group by assigned_to
+order by count1 desc
+
+
+
+
+select  issue_id, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970')) as create_date1,
+	internal_priority, customer_impact, SID_1_PRD, assigned_to, issue_status, Issue_type,
+	issue_summary, issue_details, primary_contact, primary_contacts_email_addr,
+	primary_company, created_by, initial_customer_impact 
+from arsystem..sprt_issue
+where 
+	primary_company = 'Idex Corporation'
+	and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '06'
+	and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+	and substring(issue_summary,1,16) = 'EROC: scidxdws01'
+	and issue_summary like '%CPU%'
+
+
+
+
+
+
+
+
+
+
+
+
+
+select TOP 10 * FROM  arsystem..sprt_issue
+
+select issue_id, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970')) as create_date1,
+internal_priority, customer_impact,
+ assigned_to, issue_status, Issue_type, issue_summary, issue_details, primary_contact, primary_contacts_email_addr, primary_company, created_by, initial_customer_impact 
+from arsystem..sprt_issue
+ where 
+--Issue_ID='ISS00277166'
+--assigned_to ='ddearmore'
+primary_company = 'Idex Corporation'
+and issue_status <> 'Assigned'
+and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '06'
+and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+and initial_customer_impact = 'Severity 1'
+--and (issue_summary like '%Error: 14152%' or issue_summary like '%Error: 14151%')
+and issue_details like '%SQL Request%'
+--and primary_contact = 'Anam Razzak'
+
+
+select issue_id, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970')) as create_date1,
+internal_priority, customer_impact,
+ assigned_to, issue_status, Issue_type, issue_summary, issue_details, primary_contact, primary_contacts_email_addr, primary_company, created_by, initial_customer_impact 
+from arsystem..sprt_issue
+ where 
+--Issue_ID='ISS00279414'
+--assigned_to ='ddearmore'
+primary_company = 'Idex Corporation'
+and issue_status <> 'Assigned'
+and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '06'
+and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+and initial_customer_impact = 'Severity 1'
+--and (issue_summary like '%Error: 14152%' or issue_summary like '%Error: 14151%')
+and issue_details like '%SQL Request%'
+--and primary_contact = 'Anam Razzak'
+
+
+select top 100 * from arsystem..sprt_issue
+
+
+select count(sid_1_prd) as count1, sid_1_prd
+from arsystem..sprt_issue
+ where primary_company = 'IDEX Corporation'
+group by sid_1_prd
+order by count1 desc
+

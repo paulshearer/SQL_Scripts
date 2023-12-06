@@ -1,0 +1,50 @@
+
+#F983051 List of Versions used in Previous X years
+
+USE [JDE_PD920]
+
+Select vrpid, vrvers, vrjd, vrvcd, vrved, vrchkoutdat, vrenhv
+From pd920.F983051                                                                                                      
+Where vrenhv = 'PD920' and vrved >= 116001                                                                                                       
+order by 1,2"
+
+#List of all Layout and ER Overrides
+USE [PD920]
+
+SELECT DISTINCT RSRCRDTP , RSOBNM, RSVERS
+FROM PD920.F98761
+WHERE  RSVERS != '+'
+ORDER BY RSOBNM, RSVERS"
+"USE [JDE920]
+
+
+#Find Clones based on OMW Activity
+SELECT DISTINCT c.LHOMWOBJID as ""Base"", a.LHOMWOBJID as ""Cloned"", c.LHOMWOT, c.LHUPMJ, c.LHUSER
+ FROM SY920.F98210 c, SY920.F98210 a
+WHERE c.LHUPMJ = a.LHUPMJ AND c.LHUSER = a.LHUSER AND c.LHOMWOT = a.LHOMWOT AND c.LHOMWAC = '06'   AND a.LHOMWAC = '05' AND a.LHOMWFPE = 'DV920'                                                   order by 1,2
+  "
+
+
+#Find any BIP Templates
+USE [JDE_PRODUCTION]
+
+SELECT  B.rdrpdnm as RDObjectIdB, B.rdrpddesc as RDObjectDescr, B.rdrpdsrc as UBE, B.rdrpdsrcv as Version,  C.rorpdnm as RDObjectIdC, C.rofrptmpl as XMLObjectIdC, A.fromrobjid as XMLObjectIdA, A.fromrdesc as XMLObjectDescr, A.fromrtyp TemplateType, A.frsy as SystemCode, A.fromrftyp as FileExtension, A.fromrlang as Language, A.fromrflnm as BIPTemplateFileName, A.fromruid as UniqueId
+FROM  prodctl.F95620 B, prodctl.F95600 A, prodctl.F95621 C
+WHERE B.rdrpdnm = C.rorpdnm   and C.rofrptmpl = A.fromrobjid                                                                                 
+order by  1,2,3,4"
+
+USE [JDE920]
+SELECT * FROM OL920.F9860"
+
+USE [JDE920]
+SELECT * FROM OL920.F9861"
+
+USE [JDE920]
+SELECT * FROM SY920.F9672"
+
+USE [JDE920]
+
+#Distinct UBEs
+select distinct jcfndfuf2
+From svm920.F986110
+where JCSBMDATE < 2459580"

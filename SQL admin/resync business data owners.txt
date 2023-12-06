@@ -1,0 +1,58 @@
+
+USE master
+exec sp_configure 'allow updates', 1
+RECONFIGURE WITH OVERRIDE
+go
+
+USE JDE_PYRHE
+
+declare @orgdta as varchar(2)
+declare @orgctl as varchar(2)
+declare @newdta as varchar(2)
+declare @newctl as varchar(2)
+declare @namedta as varchar(10)
+declare @namectl as varchar(10)
+declare @mysql as nchar(75)
+
+
+set @namedta = 'TESTDTA'
+set @namectl = 'TESTCTL'
+
+set @orgdta = (select uid from sysobjects where name = 'F4211')
+set @orgctl = (select uid from sysobjects where name = 'F0002')
+
+delete sysusers where name = @namedta or name = @namectl
+
+set @mysql = 'sp_adduser ' + @namectl
+exec sp_executesql @mysql
+
+set @mysql = 'sp_adduser ' + @namedta
+exec sp_executesql @mysql
+
+
+
+
+
+set @newdta = (select uid from sysusers where name = @namedta)
+set @newctl = (select uid from sysusers where name = @namectl)
+
+print @newdta + ' newdta'
+print @newctl + ' newctl'
+print @newdta + ' orgdta'
+print @newctl + ' orgctl'
+if @newdta <> @orgdta
+	BEGIN
+ 		update sysobjects set uid=@newdta where uid=@orgdta
+		commit
+	END
+if @newctl <> @orgctl
+	BEGIN
+		update sysobjects set uid=@newctl where uid=@orgctl
+		commit
+	END
+
+go
+
+USE master
+exec sp_configure 'allow updates', 0
+RECONFIGURE WITH OVERRIDE

@@ -1,0 +1,9 @@
+SELECT
+'<TABLE BORDER="1">','<TH>Concurrent Logins</TH>','<TH>Date</TH>',''
+UNION ALL
+SELECT
+'<TR>','<TD>'+logins+'</TD>','<TD>'+date+'</TD>','</TR>'
+FROM master..temp1
+UNION ALL
+SELECT
+'</TABLE>','','',''

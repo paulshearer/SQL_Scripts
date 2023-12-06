@@ -1,0 +1,37 @@
+
+declare @batchnum varchar(30), @gldgj varchar(30), @rpdgj varchar(30)
+declare @glicu float(8), @gldoc float(8)
+
+
+create table tempresults (
+	glicu float(8),
+	gldoc float(8),
+	gldgj varchar(30),
+	rpdgj varchar(30))
+
+declare curs1 CURSOR for select glicu from proddta.f0411, proddta.f0911, proddta.f0011
+	where glicu=rpicu and gldoc=rpdoc
+	and icicu=rpicu and icicu=glicu
+	and gldgj<>rpdgj and icicut='V' and icist='E' and icdicj>'105070'
+
+open curs1
+fetch next from curs1 into @batchnum
+while @@fetch_status=0
+begin
+	insert into tempresults select glicu, gldoc, gldgj, rpdgj from proddta.f0411, proddta.f0911 
+		where glicu=rpicu and gldoc=rpdoc and glicu=@batchnum
+	fetch next from curs1 into @batchnum
+end
+
+
+select distinct(glicu), gldoc, gldgj, rpdgj from tempresults where gldoc in (select max(gldoc)from tempresults group by glicu)
+
+--drop table tempresults
+close curs1
+deallocate curs1
+
+
+
+
+
+select distinct(glicu), gldoc, gldgj, rpdgj from tempresults where gldoc in (select max(gldoc)from tempresults group by glicu)

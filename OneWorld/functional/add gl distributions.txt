@@ -1,0 +1,281 @@
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090237',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090237',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090237)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090237
+
+go
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090238',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090238',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090238)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090238
+
+
+
+go
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090239',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090239',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090239)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090239
+
+go
+
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090240',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090240',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090240)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090240
+
+go
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090241',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090241',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090241)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090241
+
+go
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090242',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090242',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090242)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090242
+
+go
+
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090243',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090243',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090243)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090243
+
+go
+
+
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090244',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090244',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090244)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090244
+
+go
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090245',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090245',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090245)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090245
+
+go
+
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090246',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090246',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090246)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090246
+
+go
+
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090247',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090247',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090247)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090247
+
+go
+
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090248',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090248',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090248)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090248
+
+go
+
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090249',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090249',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090249)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090249
+go
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090250',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090250',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090250)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090250
+
+go
+
+
+update crpdta.f0911 
+set GLPYID = RMPYID, 
+    GLAN8 = RMPYID, 
+    GLCN = '10090251',
+    GLDKJ = RMDMTJ,
+    GLR1 = '10090251',
+    GLR2 = RMPYE
+from crpdta.f0413 
+where RMDOCM = (select distinct gldoc 
+                 from crpdta.f0911 
+                 where GLICU='416923' 
+                 and GLICUT='G' 
+                 and GLDOC=10090251)
+and GLICU='416923' and GLICUT='G' and GLDOC=10090251
+
+go
+
+update crpdta.f0911 set GLICUT='K' where GLICU='416923' and GLICUT='G'
+
+go
+
+
+delete crpdta.f0911 where GLICU='416923' and GLDOC=10090895 and GLJELN='2'
+
+
+
+
+
+
+
+
+

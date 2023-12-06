@@ -1,0 +1,25 @@
+if exists(select * from tempdb.dbo.sysobjects where name like '#tmptablename%') 
+drop table #tmptablename
+go
+
+select table_name into #tmptablename from information_schema.tables where table_type = 'BASE TABLE' and table_name <> 'dtproperties'
+alter table #tmptablename add nrowcount int
+go
+
+declare @cur_table nvarchar(50),@myquery nvarchar(500)
+declare db_cursor cursor for select table_name from #tmptablename
+open db_cursor
+fetch next from db_cursor into @cur_table
+while @@fetch_status = 0
+begin
+	set @myquery = 'update #tmptablename set nrowcount = (select count(*) from ['+@cur_table+'] with (nolock) ) where table_name = '''+@cur_table+''''
+	print @myquery
+	execute sp_executesql @myquery
+	
+	fetch next from db_cursor into @cur_table
+end
+CLOSE db_cursor
+DEALLOCATE db_cursor
+
+select * from #tmptablename order by nrowcount desc
+

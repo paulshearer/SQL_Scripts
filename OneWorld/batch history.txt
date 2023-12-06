@@ -1,0 +1,59 @@
+CREATE TABLE batch_history (
+	[duration] [int] NOT NULL,
+	[JCJOBQUE] [char] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[JCFNDFUF2] [char] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[JCUSER] [char] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[waittime] [int] NOT NULL ,
+	[cpu] [int] NOT NULL ,
+	[physical_io] [bigint] NOT NULL ,
+	[memusage] [int] NOT NULL ,
+	[login_time] [datetime] NOT NULL ,
+	[last_batch] [datetime] NOT NULL ,
+	[hostname] [nchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[loginame] [nchar] (128) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+) ON [PRIMARY]
+
+
+declare @spid as smallint
+
+CREATE TABLE #badsql_offenderlist (
+	[JCJOBQUE] [char] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[JCFNDFUF2] [char] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[JCUSER] [char] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[JCACTTIME] [float] NULL ,
+	[spid] [smallint] NOT NULL ,
+	[blocked] [smallint] NOT NULL ,
+	[waittype] [binary] (2) NOT NULL ,
+	[waittime] [int] NOT NULL ,
+	[waitresource] [nchar] (256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[cpu] [int] NOT NULL ,
+	[physical_io] [bigint] NOT NULL ,
+	[memusage] [int] NOT NULL ,
+	[login_time] [datetime] NOT NULL ,
+	[last_batch] [datetime] NOT NULL ,
+	[ecid] [smallint] NOT NULL ,
+	[status] [nchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[hostname] [nchar] (30) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[program_name] [nchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[hostprocess] [nchar] (8) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[cmd] [nchar] (16) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[nt_domain] [nchar] (128) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[nt_username] [nchar] (128) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[net_address] [nchar] (12) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[net_library] [nchar] (12) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[loginame] [nchar] (128) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[JCPROCESSID] [float] NOT NULL )
+
+declare curs1 CURSOR FOR select distinct spid from master..badsql
+open curs1
+
+FETCH NEXT FROM curs1 INTO @spid
+while @@FETCH_STATUS = 0
+begin
+	insert into #badsql_offenderlist select top 1 * from master..badsql where spid=@spid order by physical_io desc
+	FETCH NEXT FROM curs1 INTO @spid
+end
+insert into bluestar..batch_history select datediff(mi, login_time, last_batch) as duration, JCJOBQUE, JCFNDFUF2, JCUSER, waittime, cpu, [memusage], physical_io, login_time, last_batch, hostname, loginame from #badsql_offenderlist order by duration desc
+close curs1
+deallocate curs1
+drop table #badsql_offenderlist

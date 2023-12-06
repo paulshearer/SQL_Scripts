@@ -1,0 +1,9 @@
+-- No System User
+
+select ULUSER from sy810.f0092 NOLOCK where ULUGRP<>'*GROUP' and  ULUSER not in (select scuser from sy810.F98OWSEC nolock)
+
+ 
+
+-- No Roles
+
+select ULUSER from sy810.f0092 NOLOCK where ULUGRP<>'*GROUP' and ULUSER not in (select RLTOROLE from sy810.F95921 nolock)

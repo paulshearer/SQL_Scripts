@@ -1,0 +1,18 @@
+declare @username varchar(10)
+declare paul cursor for select ULUSER from sy811.f0092 where ULUGRP<>'*GROUP'
+open paul
+fetch next from paul into @username 
+
+while @@fetch_status=0
+begin
+	if (select count(*) from sy811.f00921 where ULUSER = @username) = 0
+	begin
+		print @username 
+		insert into sy811.f00921 (ULUSER, ULLNGP,ULCO,ULFRMT, ULDSEP, ULDECF, ULVRSP, ULCUR, ULCTR, ULUTCTIME, ULTIMEFORM, ULOMWLOG, ULRIGHTLEFT, ULFUTTIME, ULFUTTIME1, ULFUTTIME2, ULFUTTIME3, ULFUTTIME4, ULFUTTIME5, ULFUTTIME6, ULFUTTIME7, ULFUTTIME8) 
+			values (@username,'','','EMD','/','','','','','','','','0','','2','','','','','',0,0)
+
+	end
+	fetch next from paul into @username
+end
+close paul
+deallocate paul

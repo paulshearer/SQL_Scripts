@@ -1,0 +1,178 @@
+declare @servername as varchar(50)
+declare @primary_company as varchar(50)
+declare @counting as int
+declare @month as varchar(2)
+declare @year as varchar(4)
+declare @TYPE_CAT as varchar(20)
+declare @subcat as varchar(20)
+
+set @month = '03'
+set @year = '2012'
+
+--drop table #tempresults
+
+create table #tempresults (
+	primary_company varchar(150),
+	servername varchar(150),
+	summary  varchar(850),
+	TYPE_CAT varchar(120),
+	subcat varchar(120)) --with drop_existing
+
+insert into #tempresults 
+	SELECT  rtrim(primary_company), rtrim(substring(issue_summary,1,10)), rtrim(issue_summary), @TYPE_CAT, @subcat
+	FROM    arsystem..sprt_issue
+	where 	 datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = @year
+		and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = @month
+		and primary_company = 'IDEX Corporation'
+		and (issue_summary like 'sc%')
+
+
+update #tempresults set TYPE_CAT = 'EXCHANGE'
+where summary like '%EXCHANGE%'
+	or summary like '%EventID: 0xC0062538 (9528)%'
+	or summary like '%EventID: 0xC006255A (9562)%'
+	or summary like '%EXSPI%'
+	or summary like '%RIGHTFAX%'
+	or summary like '%non-delivery report%'
+	or summary like '%XXCH%'
+	or summary like '%MSS%'
+	or summary like '%bes%'
+
+	
+update #tempresults set TYPE_CAT = 'DISKSPACE'
+where summary like '%60020%'
+	or summary like  '%Freespace%'
+	or summary like  '%Utilization of%'
+	or summary like  '%Utilization on%'
+	or summary like  '%60021%'
+	or summary like  '%free space%'
+
+update #tempresults set TYPE_CAT = 'CPU'
+where summary like '%CPU%'
+
+update #tempresults set TYPE_CAT = 'SQL'
+where summary like '%Job Failed%'
+	or summary like  '%60007%'
+	or summary like  '%SPID%'
+	or summary like  '%cannot connect%'
+    or summary like  '%DBSPI%'
+
+		update #tempresults set subcat = 'BLOCKING' 
+		where TYPE_CAT = 'SQL'
+			and summary like '%60007%'
+
+		update #tempresults set subcat = 'connection' 
+		where TYPE_CAT = 'SQL'
+			and summary like '%spid%'
+
+		update #tempresults set subcat = 'FILEGROUP SPACE' 
+		where TYPE_CAT = 'SQL'
+			and summary like '%filegroup%'
+
+		update #tempresults set subcat = 'JOB FAILED' 
+		where TYPE_CAT = 'SQL'
+			and summary like '%job failed%'		
+
+		update #tempresults set subcat = 'JOB Canceled' 
+		where TYPE_CAT = 'SQL'
+			and summary like '%job canceled%'		
+
+
+update #tempresults set TYPE_CAT = 'JDE'
+where summary like '%Zombie%'
+	or summary like  '%ODBC%'
+	or summary like  '%call stack%'
+	or summary like  '%JDE%'
+	or summary like  '%PSFT%'
+	or summary like  '%60001%'
+	or summary like  '%Websphere%'	
+
+
+update #tempresults set TYPE_CAT = 'ESM'
+where summary like '%monitor%'
+	or summary like  '%ESM%'	
+
+
+update #tempresults set TYPE_CAT = 'Data Mirror'
+where summary like '%Distribution%'
+	or summary like  '%transformation server%'
+	or summary like  '%DM%'
+
+update #tempresults set TYPE_CAT = 'Cluster'
+where summary like '%cluster%'
+
+update #tempresults set TYPE_CAT = 'Reboot'
+where summary like '%reboot%'
+
+update #tempresults set TYPE_CAT = 'Oracle'
+where summary like '%ORA%'
+	or summary like  '%one or more sessions waiting%'
+	or summary like  '%command%'
+
+update #tempresults set TYPE_CAT = 'NODE Up/Down'
+where summary like '%Node Down%'
+	or summary like '%Node Up%'
+	or summary like '%Unable to unlink/erase file%'
+	or summary like '%Node is possibly down%'
+	or summary like '%Interface lan%'
+	or summary like '%previous system shutdown%'
+
+update #tempresults set TYPE_CAT = 'Netbackup'
+where summary like '%VSP%'
+	or summary like '%bk01%'
+
+
+update #tempresults set TYPE_CAT = 'Lotus Notes'
+where summary like '%LOTUS%'
+
+update #tempresults set TYPE_CAT = 'PRINTERS'
+where summary like '%Notify customer%'
+	or summary like '%PRINT%'
+
+update #tempresults set TYPE_CAT = 'HARDWARE'
+where summary like '%Broadcom%'
+	or summary like '%ServeRAID%'
+
+update #tempresults set TYPE_CAT = 'UNIX'
+where summary like '%AIX%'
+	or summary like '%RS%'
+
+update #tempresults set TYPE_CAT = 'APP Support'
+where summary like '%Citrix%'
+	or summary like '%LiveUpdate%'
+	or summary like '%Telephony%'
+
+update #tempresults set TYPE_CAT = 'RF-Smart'
+where summary like '%RFSmart%'
+
+update #tempresults set TYPE_CAT = 'SAN Performance'
+where summary like '%Disk Sec/Transfer%'
+
+
+update #tempresults set TYPE_CAT = 'TRAX'
+where summary like '%Intf%'
+or summary like '%Trax%'
+
+update #tempresults set TYPE_CAT = 'JAS'
+where summary like '%Apache%'
+or summary like '%Java heap space%'
+
+update #tempresults set TYPE_CAT = 'Comm Link Failure'
+where summary like '%Communications link failure%'
+or summary like '%SQL Server Native Client%'
+
+
+update #tempresults set TYPE_CAT = 'Auto Services not Running'
+where summary like '%service is set to Automatic%'
+or summary like '%Failure of service%'
+
+update #tempresults set TYPE_CAT = 'Citrix'
+where summary like '%CTX%'
+
+update #tempresults set TYPE_CAT = 'Sharepoint'
+where summary like '%SHP%'
+
+select * from #tempresults where TYPE_CAT is not  NULL
+
+drop table #tempresults
+

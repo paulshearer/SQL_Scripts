@@ -1,0 +1,27 @@
+declare @object varchar (20)
+declare @simkey varchar (50)
+declare @pathcode varchar(10)
+
+create table #tempresults (
+	[SIOBNM] [varchar] (20),
+	[SIMKEY] [varchar] (50),
+	[PATHCODE] [varchar] (10))
+
+declare curs1 CURSOR FOR select distinct [SIOBNM], [SIMKEY], [SIPATHCD] from JDE7333.OBJ7333.f9861 
+open curs1
+FETCH NEXT FROM curs1 into @object, @simkey, @pathcode
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	if (select count(*) from JDE7333.OBJ7333.F9861 where SIOBNM = @object and SIPATHCD = @pathcode ) <> 1
+	BEGIN
+		insert into #tempresults (SIOBNM, SIMKEY, PATHCODE) values (@object, @simkey, @pathcode)
+		--delete obj7333.f9861 where siobnm=@object and sipathcd=@pathcode and SIMKEY='XMRN11'
+			
+	END
+	FETCH NEXT FROM curs1 into @object, @simkey, @pathcode
+END
+
+select * from #tempresults 
+drop table #tempresults
+close curs1
+DEALLOCATE curs1

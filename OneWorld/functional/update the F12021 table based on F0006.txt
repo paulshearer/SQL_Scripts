@@ -1,0 +1,24 @@
+-- Fix Account wrong by cat code
+-- by Paul C. Shearer
+-- created for EKA Chemical
+-- last modified 02-26-2005
+
+declare @mcu as varchar(12)
+declare @rp01 as varchar(3)
+
+declare curs1 CURSOR FOR select distinct FAMCU from crpdta.F1201 
+open curs1
+
+FETCH NEXT from curs1 into @mcu
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	set @rp01 = (select MCRP01 from crpdta.f0006 where MCMCU=@mcu)
+	update crpdta.f1201 set FAACL7=@rp01 where FAMCU=@mcu
+	--print @mcu 
+	--print @rp01
+	FETCH NEXT from curs1 into @mcu
+END
+
+close curs1
+DEALLOCATE curs1

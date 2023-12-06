@@ -1,0 +1,32 @@
+
+
+declare @version varchar (20)
+declare @ube varchar (20)
+
+create table #tempresults (
+	[VRPID] [varchar] (20),
+	[VRVERS] [varchar] (20))
+
+declare curs1 CURSOR FOR select distinct [VRPID], [VRVERS] from JDE_PY7333.py7333.f983051 where VRVRSAVAIL='Y'
+open curs1
+FETCH NEXT FROM curs1 into @ube, @version
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	if (select count(*) from JDE_DV7333.DV7333.F983051 where VRPID = @ube and VRVERS = @version) = 0
+	BEGIN
+		insert into #tempresults (VRPID, VRVERS) values (@ube, @version)
+	END
+	FETCH NEXT FROM curs1 into @ube, @version
+END
+
+select * from #tempresults
+drop table #tempresults
+close curs1
+DEALLOCATE curs1
+
+
+
+
+-- versions never checked in
+-- select distinct [VRPID], [VRVERS] from JDE_PY7333.py7333.f983051 where VRVRSAVAIL<>'Y' order by vrpid, vrvers
+

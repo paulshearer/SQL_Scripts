@@ -1,0 +1,34 @@
+SELECT 
+	spid
+	,request_mode
+	,request_type
+	,request_lifetime
+	,cpu
+	,physical_io
+	,memusage
+	,open_tran
+	,hostname
+	,program_name
+	,CASE
+        WHEN resource_type = 'OBJECT'
+        THEN OBJECT_NAME(dm_tran_locks.resource_associated_entity_id)
+        ELSE OBJECT_NAME(partitions.OBJECT_ID)
+     END AS ObjectName
+	,hostprocess
+	,nt_domain
+	,nt_username
+	,loginame
+	,login_time
+	,Last_batch
+	,waittime
+	,resource_type
+	,resource_database_id
+	,resource_associated_entity_id
+	,resource_lock_partition
+	,request_owner_type
+FROM sys.dm_tran_locks
+JOIN sysprocesses ON request_session_id=spid
+LEFT JOIN sys.partitions ON partitions.hobt_id = dm_tran_locks.resource_associated_entity_id
+LEFT JOIN sys.indexes ON indexes.OBJECT_ID = partitions.OBJECT_ID AND indexes.index_id = partitions.index_id
+WHERE resource_type not in ('METADATA', 'DATABASE')
+and resource_database_id in ('2', '13')

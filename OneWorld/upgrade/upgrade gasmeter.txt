@@ -1,0 +1,9 @@
+
+select count(*)as success from f98405 where STPLNNAM='EKA PS8.11 PY' and STPLNDST='60'
+
+select count(*)as error from f98405 where STPLNNAM='EKA PS8.11 PY' and STPLNDST='50'
+
+select count(*)as not_processed from f98405 where STPLNNAM='EKA PS8.11 PY' and STPLNDST='30'
+
+select count(*)as running from f98405 where STPLNNAM='EKA PS8.11 PY' and STPLNDST='45'
+

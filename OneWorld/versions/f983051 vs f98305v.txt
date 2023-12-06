@@ -1,0 +1,7 @@
+
+SELECT * from py810.f983051 AS a INNER JOIN py810.f98305v AS p
+   ON  a.vrpid = p.wvobnm and A.VRVERS = p.WVVERS
+
+
+SELECT * from py810.f98305v p LEFT OUTER JOIN py810.f983051 a
+   ON a.vrpid = p.wvobnm and A.VRVERS = p.WVVERS

@@ -1,0 +1,210 @@
+
+
+--Set the @databasename parameter to the db you need to script the clustered indexes and then run the
+-- script in that database and it will give you something like this. 
+
+
+SET NOCOUNT ON
+
+SET ARITHABORT ON
+
+SET QUOTED_IDENTIFIER ON
+
+ 
+
+DECLARE @databasename VARCHAR(50)
+
+DECLARE @chrTABLE_CATALOG NVARCHAR(256)
+
+DECLARE @chrTABLE_SCHEMA NVARCHAR(256)
+
+DECLARE @ParmDefinition NVARCHAR(500)
+
+DECLARE @chrTABLE_NAME NVARCHAR(256)
+
+DECLARE @chrTablePath NVARCHAR(256)
+
+DECLARE @SQLString NVARCHAR(500)
+
+DECLARE @log_file VARCHAR(50)
+
+DECLARE @count INT
+
+DECLARE @tablename VARCHAR (128)
+
+DECLARE @objectid  INT
+
+DECLARE @indexid   INT
+
+DECLARE @frag      DECIMAL
+
+DECLARE @count1          INT
+
+DECLARE @objname   VARCHAR(20)
+
+DECLARE @ExecStr    nvarchar(4000)
+
+       ,@ColList    nvarchar(3000)
+
+         ,@Unique     nvarchar(7)     
+
+         ,@FillFactor   nvarchar(100)
+
+       ,@IndexName  sysname
+
+ 
+
+SET @databasename = 'JDE_PDVIKING' 
+
+CREATE TABLE #IndexInfo
+
+(
+
+      IndexName   sysname,
+
+      IndexDesc   varchar(210),
+
+      IndexKeys   nvarchar(2126)
+
+)
+
+ 
+
+TRUNCATE TABLE ACS_TEMP..table_name
+
+ 
+
+INSERT INTO [ACS_TEMP].[dbo].[table_name]([chrTABLE_CATALOG], [chrTABLE_SCHEMA], [chrTABLE_NAME], [id])
+
+EXEC ('SELECT DISTINCT b.TABLE_CATALOG,b.TABLE_SCHEMA,b.TABLE_NAME, a.id FROM '+@databasename+'..sysobjects a JOIN '+@databasename+'.dbo.TABLES b ON a.name = b.TABLE_NAME WHERE a.xtype = ''U'' AND b.TABLE_SCHEMA IS NOT NULL ORDER BY b.TABLE_CATALOG,b.TABLE_SCHEMA,b.TABLE_NAME')
+
+ 
+
+DECLARE crTableList INSENSITIVE CURSOR FOR
+
+SELECT chrTABLE_CATALOG,chrTABLE_SCHEMA,chrTABLE_NAME 
+
+FROM ACS_TEMP..table_name
+
+ORDER BY chrTABLE_CATALOG,chrTABLE_SCHEMA,chrTABLE_NAME
+
+ 
+
+OPEN crTableList
+
+ 
+
+FETCH NEXT FROM crTableList INTO
+
+@chrTABLE_CATALOG,
+
+@chrTABLE_SCHEMA,
+
+@chrTABLE_NAME
+
+ 
+
+WHILE @@FETCH_STATUS = 0
+
+ 
+
+BEGIN 
+
+ 
+
+SELECT @chrTablePath = '['+@chrTABLE_SCHEMA+'].['+@chrTABLE_NAME+']'
+
+ 
+
+TRUNCATE TABLE #IndexInfo
+
+ 
+
+INSERT INTO #IndexInfo 
+
+EXEC sp_helpindex @chrTablePath
+
+ 
+
+SELECT @ColList = a.IndexKeys
+
+      ,@IndexName = a.IndexName
+
+        ,@Unique = CASE 
+
+                     WHEN a.IndexDesc LIKE 'clustered, unique%' 
+
+                             THEN 'Unique '
+
+                              ELSE ''
+
+                          END --CASE Expression
+
+        ,@FillFactor = ', FILLFACTOR = ' + NULLIF(convert(nvarchar(3), (SELECT b.OrigFillFactor 
+
+                                                                                    FROM sysindexes b
+
+                                                                                    WHERE b.id = object_id(@chrTablePath) 
+
+                                                                                      AND b.Name = a.IndexName)), 0)
+
+FROM #IndexInfo a
+
+WHERE a.IndexDesc LIKE '%clustered%'
+
+ 
+
+SELECT @ExecStr = 'CREATE ' + UPPER(@Unique) + 'CLUSTERED INDEX ' 
+
+                                    + QUOTENAME(@IndexName, ']') + ' ON ' 
+
+                                    + @chrTablePath + '(' + @collist 
+
+                                    + ') WITH DROP_EXISTING ' + ISNULL(@FillFactor, '')+' ON [PRIMARY]'+CHAR(10)+'GO'
+
+ 
+
+-- Added Aug 25, 04: FIX FOR DESC Indexes.
+
+SELECT @ExecStr = REPLACE(@ExecStr, '(-)', ' DESC')
+
+ 
+
+-- For testing the String
+
+-- SELECT @ExecStr
+
+ 
+
+-- Create the Clustered Index
+
+PRINT @ExecStr
+
+ 
+
+FETCH NEXT FROM crTableList INTO
+
+@chrTABLE_CATALOG,
+
+@chrTABLE_SCHEMA,
+
+@chrTABLE_NAME
+
+ 
+
+END
+
+ 
+
+CLOSE crTableList
+
+DEALLOCATE crTableList
+
+ 
+
+DROP TABLE #IndexInfo
+
+ 
+
+ 
+

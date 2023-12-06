@@ -1,0 +1,21 @@
+declare @printername varchar(50)
+declare @oldprintername varchar(50)
+declare @shortprinter varchar (10)
+declare @sqlcommand nchar(150)
+
+set @printername = 'printer name'
+
+set @shortprinter = '%' + substring(@printername, (len(@printername)-5) , 6)
+if (select count(*) from sys7333.f986163 where PCPHYD like @shortprinter) <> 0 
+	begin
+		if (select count(*) from sys7333.f986163 where PCPHYD like @shortprinter)<9
+		begin
+			set @oldprintername = (select PCPHYD from sys7333.f986163 where PCPHYD like substring(@printername, 5, len(@printername)))
+			set @sqlcommand ='update sys7333.f986163 set PCPHYD=''\\dlekadep01\' + @printername  + ''' where PCPHYD like ' + '''' + @shortprinter + ''''
+ 			exec sp_executesql @sqlcommand
+			--PRINT @sqlcommand
+		end
+		if (select count(*) from sys7333.f986163 where PCPHYD like @shortprinter)>8 PRINT 'There are too many records: ' 
+		
+	end
+

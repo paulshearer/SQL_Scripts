@@ -1,0 +1,29 @@
+
+
+declare @object varchar (20)
+declare @disc varchar (50)
+
+create table #tempresults (
+	[SIOBNM] [varchar] (20),
+	[SIMD] [varchar] (50))
+
+declare curs1 CURSOR FOR select distinct [SIOBNM], [SIMD] from JDE7333.OBJ7333.f9860 where SISY = '55' or SISY='56' or SISY = '57'
+open curs1
+FETCH NEXT FROM curs1 into @object, @disc
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	if (select count(*) from JDE7333.OBJ7333.F9861 where SIOBNM = @object and SIPATHCD = 'PD7333') = 0
+	BEGIN
+		if (select count(*) from JDE7333.OBJ7333.F9861 where SIOBNM = @object and SIPATHCD = 'DV7333') <> 0
+			BEGIN insert into #tempresults (SIOBNM, SIMD) values (@object, @disc)
+			--delete obj7333.f9860 where siobnm=@object
+			END
+	END
+	FETCH NEXT FROM curs1 into @object, @disc
+END
+
+select * from #tempresults
+drop table #tempresults
+close curs1
+DEALLOCATE curs1
+

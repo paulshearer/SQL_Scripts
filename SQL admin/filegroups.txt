@@ -1,0 +1,25 @@
+use master
+
+declare @name as varchar(50)
+
+DECLARE @SQL nvarchar(200)
+
+create table #tempresults (
+	dbname		varchar(50),
+	name		varchar(50),
+	filename	varchar(100))
+
+declare curs1 CURSOR for select name from sysdatabases
+
+open curs1
+fetch next from curs1 into @name
+while @@fetch_status=0
+begin
+	set @sql = 'insert into #tempresults select ''' + @name +''', name, filename from ' + @name + '..sysfiles'
+	EXEC sp_executesql @sql
+	fetch next from curs1 into @name
+end
+close curs1
+deallocate curs1
+select * from #tempresults --where filename like 'r%' or filename like 't%'
+--drop table #tempresults

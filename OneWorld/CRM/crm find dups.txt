@@ -1,0 +1,27 @@
+SELECT aban8
+FROM crpdta.f0101 LEFT OUTER JOIN crpcrm.company 
+   ON aban8 = F0101_ABAN8
+WHERE (F0101_ABAN8 IS NULL) and (ABAT1='C')
+
+
+select count(*) from crpcrm.company
+go
+select count(*) from crpdta.f0101
+
+select F0101_ABAN8
+from crpcrm.company LEFT OUTER JOIN crpdta.F0101
+	on F0101_ABAN8 = aban8
+WHERE (aban8 IS NULL) 
+
+
+
+
+select * from crpdta.f0101 where aban8=100376
+go
+select * from crpcrm.company where f0101_ABAN8 = 100376
+
+
+SELECT employee.emp_id, employee.job_id
+FROM employee LEFT OUTER JOIN jobs 
+   ON employee.job_id = jobs.job_id
+WHERE (jobs.job_id IS NULL)

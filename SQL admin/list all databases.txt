@@ -1,0 +1,16 @@
+select name from sysdatabases where name not in ('tempdb', 'master', 'model', 'msdb', 'Northwind', 'distribution', 'pubs')
+
+
+
+declare @name varchar (120)
+
+declare curs1 CURSOR FOR select name from sysdatabases where name not in ('tempdb', 'master', 'model', 'msdb', 'Northwind', 'distribution', 'pubs')
+open curs1
+FETCH NEXT FROM curs1 into @name 
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	
+	exec sp_helpdb @name
+	FETCH NEXT FROM curs1 into @name
+END
+

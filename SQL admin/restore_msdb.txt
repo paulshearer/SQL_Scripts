@@ -1,0 +1,12 @@
+execute sp_sqlzip_restore_mt
+
+ @dbname='msdb'
+,@reptfile='c:\msdb.restore.report'
+,@parts=4
+,@bkupfile1 = 'g:\aa\msdb01.zbak'
+,@bkupfile2 = 'g:\aa\msdb02.zbak'
+,@bkupfile3 = 'g:\aa\msdb03.zbak'
+,@bkupfile4 = 'g:\aa\msdb04.zbak'
+,@options='replace,
+move ''msdbData'' to ''e:\sqldta\msdbdata.mdf'',
+move ''msdblog'' to ''f:\sqllog\msdblog.ldf'' '

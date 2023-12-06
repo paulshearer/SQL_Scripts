@@ -1,0 +1,53 @@
+--*******************************************************************************************
+-- USE: Database size growth trend analysis
+--
+-- NOTE: For use on SQL 2005 and above
+--
+-- INSTUCTIONS: Run on server that you want to get growth analysis
+--
+--********************************************************************************************
+
+WITH    DbSizeCTE(ShortName,InstanceName,DateTime,DbName,Dsize,Lsize)
+          AS (SELECT    'ShortName' = (SELECT   UPPER(PValue)
+                                       FROM     ACS.dbo.ClientParameters
+                                       WHERE    PName='CLIENT NAME')
+                       ,'InstanceName' = (SELECT    @@SERVERNAME)
+                       ,'DateTime' = bs.backup_finish_date
+                       ,'DbName' = bs.database_name
+                       ,SUM(CASE file_type
+                              WHEN 'D' THEN file_size
+                              ELSE 0
+                            END) AS Dsize
+                       ,SUM(CASE file_type
+                              WHEN 'L' THEN file_size
+                              ELSE 0
+                            END) AS Lsize
+              FROM      msdb.dbo.backupset bs
+                       ,msdb.dbo.backupfile bf
+              WHERE     bf.backup_set_id=bs.backup_set_id
+                        AND bs.type='D'
+              GROUP BY  bs.backup_finish_date
+                       ,bs.backup_set_id
+                       ,bs.backup_size
+                       ,bs.database_name)
+                       
+                       
+    SELECT  a.[ShortName]
+           ,a.[InstanceName]
+           ,UPPER(a.[DBName])
+		,(MAX((a.[DSize]/1024/1024/1024)) + MAX((a.[LSize]/1024/1024/1024))) + (((MAX((a.[DSize]/1024/1024/1024)) - MIN((a.[DSize]/1024/1024/1024))) /12) * 24) as Total_Space_in_24_months
+           ,(MAX((a.[DSize]/1024/1024/1024)) + MAX((a.[LSize]/1024/1024/1024))) AS Total_GB_Used
+		   ,(MAX((a.[DSize]/1024/1024/1024)) - MIN((a.[DSize]/1024/1024/1024))) /12 as Monthly_growth_rate
+
+
+    FROM    DbSizeCTE a
+	WHERE DATEPART(YY,a.[DateTime]) in ('2012', '2011')
+	AND	DATEPART(MM,a.[DateTime]) = '7'
+    GROUP BY 
+            a.[DBName]
+           ,a.[ShortName]
+           ,a.[InstanceName]
+    ORDER BY a.[InstanceName]
+           ,a.[DBName]
+
+         

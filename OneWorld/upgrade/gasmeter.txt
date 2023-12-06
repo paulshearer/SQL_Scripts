@@ -1,0 +1,17 @@
+SELECT     count(*) as done
+FROM         F98405
+WHERE     (STPLNNAM = 'EKA PS8.11 PD')and STPLNDST = '60'
+
+SELECT     STOBNM as 'currently processing'
+FROM         F98405
+WHERE     (STPLNNAM = 'EKA PS8.11 PD')and STPLNDST = '45'
+
+SELECT     count(*) as error
+FROM         F98405
+WHERE     (STPLNNAM = 'EKA PS8.11 PD')and STPLNDST = '50'
+
+
+SELECT     count(*) as pending
+FROM         F98405
+WHERE     (STPLNNAM = 'EKA PS8.11 PD')and STPLNDST = '30'
+

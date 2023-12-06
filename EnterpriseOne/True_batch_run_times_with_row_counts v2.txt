@@ -1,0 +1,21 @@
+--create view for F986110 and F986114
+
+SELECT b.JCPID, b.JCVERS, DATEDIFF(ss, b.JCSTDTIM, b.JCETDTIM) AS sec_to_completion, b.JCPWPRCD AS rows_processed, a.JCSBMDATE AS submitted_date, a.JCSBMTIME AS submitted_time, b.JCSTDTIM AS execute_time, b.JCETDTIM AS complete_time
+FROM   dbo.F986110 AS a INNER JOIN
+          dbo.F986114 AS b ON a.JCJOBNBR = b.JCJOBNBR
+
+
+
+
+
+select JCPID
+,JCVERS
+,count(JCPID) as count1
+,avg(sec_to_completion) as average_time_sec
+,avg(rows_processed) as average_rows
+,(avg(sec_to_completion) * count(JCPID)) as total_time
+from batch_time_and_rows
+--where execute_time < '7/23/2019'
+group by JCPID, JCVERS
+order by average_time_sec desc
+

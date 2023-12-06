@@ -1,0 +1,43 @@
+declare @batchnum varchar(30)
+declare @correctdate varchar(30)
+declare @docnum float(8)
+declare @baddate float(8)
+declare @counter int 
+
+declare @mysql varchar(200)
+
+create table #tempresults (
+	glicu float(8),
+	gldoc float(8),
+	gldgj varchar(30),
+	rpdgj varchar(30))
+	
+
+set @counter = 0
+
+insert into #tempresults select glicu, gldoc, gldgj, rpdgj from proddta.f0411, proddta.f0911, proddta.f0011
+	where glicu=rpicu and gldoc=rpdoc
+	and icicu=rpicu and icicu=glicu
+	and gldgj<>rpdgj and icicut='V' and icist='E' and icdicj>'105070'
+
+--delete #tempresults where glicu <> '400087'
+
+declare curs1 CURSOR for select glicu, gldoc, gldgj, rpdgj from #tempresults
+open curs1
+fetch next from curs1 into @batchnum, @docnum, @baddate, @correctdate
+while @@FETCH_STATUS = 0
+begin
+	--set @mysql = 'update proddta.f0911 set gldgj='+ @correctdate +' where glicu=' + @batchnum + ' and gldoc=' +@docnum
+	--print @mysql
+	update proddta.f0911 set gldgj=@correctdate where glicu=@batchnum and gldoc=@docnum
+	set @counter=@counter+1
+	print @batchnum
+	fetch next from curs1 into @batchnum, @docnum, @baddate, @correctdate
+end
+
+close curs1
+deallocate curs1
+
+
+--drop table #tempresults
+

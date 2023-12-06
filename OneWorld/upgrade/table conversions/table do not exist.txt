@@ -1,0 +1,20 @@
+declare @tablename varchar(10)
+declare @julie nchar(50)
+declare @counter int
+declare paul cursor for select STOBNM from F98405 WHERE     (STPLNDST = '50') AND (STPLNNAM = 'DV UPGRADE')
+open paul
+fetch next from paul into @tablename 
+set @counter=0
+
+while @@fetch_status=0
+begin
+	if (select count(*) from dlekaent03.jde_development.dbo.sysobjects where name = @tablename) = 0 
+	begin
+		set @counter = @counter+1
+		print convert(varchar(3),@counter) + '   ' + convert(varchar(15),@tablename) 
+		--update F98405 set STPLNDST = '60' where (STPLNDST = '50') AND (STPLNNAM = 'DEV UP2') and STOBNM = @tablename
+	end
+	fetch next from paul into @tablename
+end
+close paul
+deallocate paul

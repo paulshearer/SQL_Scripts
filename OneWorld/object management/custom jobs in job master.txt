@@ -1,0 +1,1 @@
+select substring(JCFNDFUF2,1,(charindex('_',JCFNDFUF2)-1))as ube, count(substring(JCFNDFUF2,1,(charindex('_',JCFNDFUF2)-1))) as 'times executed' from jobmaster where JCFNDFUF2 like 'R55%' or JCFNDFUF2 like 'R57%' group by substring(JCFNDFUF2,1,(charindex('_',JCFNDFUF2)-1)) order by [times executed] desc

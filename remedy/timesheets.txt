@@ -1,0 +1,35 @@
+
+--monthly FTE per client
+
+SELECT datepart(mm,te.CurrentDate) as month1,
+       datepart(yy,te.CurrentDate) as year1,
+       1 - (sum(CAST(te.TimeSpan AS decimal(10, 5)) / 60 / 60) /160) AS FTE
+FROM OTSDB..TUser u INNER JOIN OTSDB..TTimeEntry te 
+ON u.UniqueId = te.UserId 
+INNER JOIN OTSDB..TActivity ta 
+ON te.ActivityId = ta.UniqueId
+WHERE ta.name like 'Lumileds%'
+--AND te.CurrentDate BETWEEN @startdate AND @enddate
+group by datepart(yy,te.CurrentDate), datepart(mm,te.CurrentDate) 
+order by year1 desc, month1 desc
+
+select distinct name from TActivity
+
+
+
+--how many hows has a person been working each month
+
+SELECT datepart(mm,te.CurrentDate) as month1,
+       datepart(yy,te.CurrentDate) as year1,
+       sum(CAST(te.TimeSpan AS decimal(10, 5)) / 60 / 60)  AS hours
+FROM OTSDB..TUser u INNER JOIN OTSDB..TTimeEntry te 
+ON u.UniqueId = te.UserId 
+INNER JOIN OTSDB..TActivity ta 
+ON te.ActivityId = ta.UniqueId
+WHERE te.userId = '250'
+--AND te.CurrentDate BETWEEN @startdate AND @enddate
+group by datepart(yy,te.CurrentDate), datepart(mm,te.CurrentDate) 
+order by year1 desc, month1 desc
+
+select * from tuser where lastname = 'Valdez'
+

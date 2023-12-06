@@ -1,0 +1,22 @@
+print bluestar.dbo.fn_ConvertSQLDate()
+print bluestar.dbo.fn_GetJDEDate('3-30-2005')
+
+print bluestar.dbo.fn_GetJDEDate('12-31-2010')
+
+select top 5 * from crpdta.F4104 where bluestar.dbo.fn_ConvertJDEDate(IVEXDJ) = '12-31-2020'
+
+update crpdta.f4104 set IVEXDJ='110365', IVUSER='JHATHAWAY', IVPID='SQLUPDATE', IVUPMJ='105089', IVTDAY=153101 where bluestar.dbo.fn_ConvertJDEDate(IVEXDJ) = '12-31-2020'
+
+
+
+FROM JDE7333.app5.F986110 e (NOLOCK) 
+WHERE ACS.dbo.fn_ConvertJDEDate(e.JCSBMDATE) >= convert(varchar(12), getdate()-1, 110)
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,35 @@
+SELECT  count(*) as refreshes
+      ,primary_company
+	  ,datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) as month1
+FROM    arsystem..sprt_issue
+WHERE   primary_company IN ('Idex Corporation','First Group America','Universal Compression',
+		'LumiLeds Lighting','Eka Chemicals','SATCOM Technologies, Inc.',
+		'Esterline Technologies, Corp','MD Helicopters','ACS-HCS','Omnisource Corporation',
+		'ZALES') 
+--AND issue_status NOT IN ('Closed','Waiting on Cust Closure')
+--and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) in ('11','10')
+and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+and issue_summary like '%refresh%'
+group by primary_company, datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970')))
+ORDER BY primary_company,  month1
+
+
+SELECT  issue_id
+       ,DATEADD(hh,-5,DATEADD(s,Create_Date,'01/01/1970')) AS create_date1
+	,SID_1_PRD
+       ,assigned_person
+       ,issue_status
+       ,Issue_type
+       ,issue_summary
+       ,issue_details
+       ,primary_contact
+       ,primary_contacts_email_addr
+       ,primary_company
+       ,created_by
+       ,initial_customer_impact
+FROM    arsystem..sprt_issue
+WHERE   primary_company IN ('Idex Corporation') 
+--AND issue_status NOT IN ('Closed','Waiting on Cust Closure')
+--and datepart(mm, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) in ('11','10')
+and datepart(yy, DATEADD(hh, - 5, DATEADD(s, Create_Date, '01/01/1970'))) = '2007'
+and issue_summary like '%refresh%'
